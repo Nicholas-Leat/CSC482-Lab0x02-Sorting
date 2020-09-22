@@ -1,5 +1,7 @@
 package com.company;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.Random;
 
 public class CSC482Sorting {
@@ -10,11 +12,24 @@ public class CSC482Sorting {
         k = 6;
         System.out.printf("Generating list of length %d, key width of %d:\n",N,k);
         char[][] myList = GenerateTestList(N,k,65,90);
-        System.out.printf("Sorting with Selection Sort!\n");
+       /** System.out.printf("Sorting with Selection Sort!\n");
         myList = SelectionSort(myList,N,k);
         IsSorted(myList,N,k);
-
-
+        /**/
+       for(int i = 0; i < N; i++){
+           for(int x = 0; x < k; x++){
+               System.out.printf("%c",myList[i][x]);
+           }
+           System.out.println(" ");
+       }
+       myList = MergeSort(myList,0,N-1);
+       System.out.println("After merge sort Sort");
+        for(int i = 0; i < N; i++){
+            for(int x = 0; x < k; x++){
+                System.out.printf("%c",myList[i][x]);
+            }
+            System.out.println(" ");
+        }
     }
 
     public static char[][] SelectionSort(char[][] sortList, int N, int k){
@@ -49,44 +64,16 @@ public class CSC482Sorting {
         }
         return sortList;
     }
-    public static char[][] MergeSort(char[][] sortList){
+    public static char[][] MergeSort(char[][] sortList,int low, int high){
+
         return sortList;
     }
     public static char[][] QuickSort(char[][] sortList,int row,int col, int begin, int end){
-        if (begin < end) {
-            int partind = partition(sortList, begin, row - 1, col);
-            if(partind == -1){
-                return sortList;
-            }
-            sortList = QuickSort(sortList, row, col, begin, partind - 1);
-            sortList = QuickSort(sortList, row, col, partind + 1, end);
-        }
 
         return sortList;
     }
     public static int partition(char[][] myList, int begin, int end, int col){
-        int[] pivot = new int[col];
-        char[] temp = new char[col];
-        int i = (begin - 1);
-        if(i+1 == 10){
-            return -1;
-        }
-        for(int j = begin; j < end; j++){
-            if(myList[j][1] <= pivot[1]){
-                i++;
-                for(int iter = 0; iter<col; iter++){
-                    temp[iter] = myList[i][iter];
-                    myList[i][iter] = myList[j][iter];
-                    myList[j][iter] = temp[iter];
-                }
 
-            }
-        }
-        for(int iter = 0; iter < col; iter++){
-            temp[iter] = myList[i+1][iter];
-            myList[i+1][iter] = myList[end][iter];
-            myList[end][iter] = temp[iter];
-        }
         return i +1;
     }
     public static char[][] RadixSort(char[][] sortList){
@@ -137,5 +124,27 @@ public class CSC482Sorting {
             System.out.println("Not Sorted!");
         }
     }
+    public static void TimePerformence(char[][] myList, int row, int col){
+        //run for multiple N values and multiple k values
 
+        long BeforeTime = getCpuTime();
+        myList = SelectionSort(myList,row,col);
+        long AfterTime = getCpuTime();
+        long selectionTime = AfterTime - BeforeTime;
+
+
+
+        return;
+    }
+    public static long getCpuTime( ) {
+
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+
+        return ((ThreadMXBean) bean).isCurrentThreadCpuTimeSupported( ) ?
+
+                bean.getCurrentThreadCpuTime( ) : 0L;
+
+    }
 }
+
+
