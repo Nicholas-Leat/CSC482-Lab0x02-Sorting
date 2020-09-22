@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/CSC482-Lab0x02-Sorting.iml" filepath="$PROJECT_DIR$/.idea/CSC482-Lab0x02-Sorting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CSC482-Sorting/CSC482-Sorting.iml" filepath="$PROJECT_DIR$/CSC482-Sorting/CSC482-Sorting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CSC482-Sorting.java/CSC482-Sorting.java.iml" filepath="$PROJECT_DIR$/CSC482-Sorting.java/CSC482-Sorting.java.iml" />
     </modules>
   </component>
 </project>
