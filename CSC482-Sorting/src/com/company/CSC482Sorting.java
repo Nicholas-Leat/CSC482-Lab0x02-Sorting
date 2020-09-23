@@ -2,6 +2,7 @@ package com.company;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.Arrays;
 import java.util.Random;
 
 public class CSC482Sorting {
@@ -22,8 +23,8 @@ public class CSC482Sorting {
            }
            System.out.println(" ");
        }
-       myList = MergeSort(myList,0,N-1, k);
-       System.out.println("After merge sort Sort");
+       myList = MergeSort(myList,0,N,k);
+       System.out.println("After Merge Sort");
         for(int i = 0; i < N; i++){
             for(int x = 0; x < k; x++){
                 System.out.printf("%c",myList[i][x]);
@@ -66,84 +67,121 @@ public class CSC482Sorting {
     }
     public static char[][] MergeSort(char[][] sortList,int low, int high,int col){
         if(low < high){
-            int m = (low + high)/2;
-            sortList = MergeSort(sortList,low, m,col);
-            sortList = MergeSort(sortList,m+1,high,col);
-            sortList = merge(sortList,low,high,col,m);
+            int mid = (low + high)/2;
+            sortList = MergeSort(sortList,low,mid,col);
+            sortList = MergeSort(sortList,mid+1,high,col);
+            sortList = Merge(sortList,low,high,mid,col);
         }
         return sortList;
     }
-    public static char[][] merge(char[][] sortList, int low, int high, int col, int m){
-        int n1 = m - low + 1;
-        int n2 = high - m;
-
-        char[][] Left = new char[high][col];
-        char[][] Right = new char[high][col];
-        char[][] merged = new char[high][col];
-        System.out.printf("Value of n1 : %d \n", n1);
-
-        for(int i = 0; i < n1; i++){
-            for(int x = 0; x < col; x++){
-                System.out.println(i);
-                Left[i][x] = 'c';//sortList[i][x];
-            }
-        }
-        for(int i = 0; i < n2; i++){
-            for(int x = 0; x < col; x++){
-                Right[i][x] = sortList[m+1+i][x];
-            }
-        }
-        int i = 0;
-        int j = 0;
+    public static char[][] Merge(char[][] sortList, int low, int high, int m, int col){
+        char[][] temp = new char[high+1][col];
+        int i = low;
+        int j = m +1;
         int k = 0;
 
-        while(i < n1 && j < n2){
-            if((int)Left[i][0] <= (int)Right[j][0]){
-                for(int z = 0; z < col; z++){
-                    merged[k][z] = Left[i][z];
+        while(i <= m && j <= high){
+            if(sortList[i][0] <= sortList[j][0]){
+                for(int x = 0; x < col; x++){
+                    temp[k][x] = sortList[i][x];
                 }
+                k++;
                 i++;
-            } else{
+            }else if(sortList[i][0] == sortList[j][0]){
                 for(int z = 0; z < col; z++){
-                    merged[k][z] = Right[j][z];
+                    if(sortList[i][z] <= sortList[j][z]){
+                        for(int x = 0; x < col; x++){
+                            temp[k][x] = sortList[i][x];
+                        }
+                        k++;
+                        i++;
+                    }else{
+                        for(int x = 0; x < col; x++){
+                            temp[k][x] = sortList[j][x];
+                        }
+                        k++;
+                        j++;
+                    }
                 }
+            }else{
+                for(int x = 0; x < col; x++){
+                    temp[k][x] = sortList[j][x];
+                }
+                k++;
                 j++;
             }
-            k++;
         }
-        while(i < n1 && k < high){
-            for(int iter = 0; iter < col; iter++){
-                merged[k][iter] = Left[i][iter];
+        while(i <= m){
+            for(int x = 0; x < col; x++){
+                temp[k][x] = sortList[i][x];
             }
+            k++;
             i++;
-            k++;
         }
-        while(j < n2 && k < high){
-            for(int iter = 0; iter < col; iter++){
-                merged[k][iter] = Right[j][iter];
+        while(j <= high){
+            for(int x = 0; x < col; x++){
+                temp[k][x] = sortList[j][x];
             }
-            j++;
             k++;
+            j++;
+        }
+        for(int x = low; x < high; x++){
+            for(i = 0; i < col; i++){
+                sortList[x][i] = temp[x - low][i];
+            }
         }
 
-        System.out.printf("End of merge function\n");
-        return merged;
+        return sortList;
     }
-    public static char[][] QuickSort(char[][] sortList,int row,int col, int begin, int end){
-
+    public static char[][] QuickSort(char[][] sortList,int row,int col, int low, int high){
+        int partition = partition(sortList,low,high,col);
+        if(partition-1 > low){
+            sortList = QuickSort(sortList,row,col,low,partition-1);
+        }
+        if(partition+1 < high){
+            sortList = QuickSort(sortList,row,col,partition+1,high);
+        }
         return sortList;
     }
     public static int partition(char[][] myList, int begin, int end, int col){
+      char[] pivot = new char[col];
+      for(int x = 0; x < col; x++){
+          pivot[x] = myList[end][x];
+      }
+      char[] temp = new char[col];
+      for(int i = begin; i < end; i++){
+          if((int)myList[i][0]<(int)pivot[0]){
+              for(int x = 0; x < col; x++) {
+                  temp[x] = myList[begin][x];
+                  myList[begin][x] = myList[i][x];
+                  myList[i][x] = temp[x];
+              }
+              begin++;
+          }else if((int)myList[i][0] == (int)pivot[0]){
+             for(int z =0; z < col; z++){
+                 if((int)myList[i][z]<(int)pivot[z]){
+                     for(int x = 0; x < col; x++) {
+                         temp[x] = myList[begin][x];
+                         myList[begin][x] = myList[i][x];
+                         myList[i][x] = temp[x];
+                     }
+                 }
+             }
+          }
+      }
+      for(int x = 0; x < col; x++) {
+          temp[x] = myList[begin][x];
+          myList[begin][x] = pivot[x];
+          myList[end][x] = temp[x];
+      }
 
-        return 1;
+      return begin;
     }
     public static char[][] RadixSort(char[][] sortList, int length, int col){
         int m = getMax(sortList,length,col);
         return sortList;
     }
-    public  static char[][] countSort(char[][] sortList, int length, int col, int exp){
-        char[][] output = new char[length][col];
-    }
+
     public static int getMax(char[][] sortList, int length, int col){
         int mx = (int)sortList[0][0];
         for(int i = 0; i < length; i++){
