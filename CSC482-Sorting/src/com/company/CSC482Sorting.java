@@ -10,7 +10,9 @@ public class CSC482Sorting {
         // write your code here
         int N;
         N = 10;
+        int k = 6;
         TimePerformence(N);
+
     }
 
     public static char[][] SelectionSort(char[][] sortList, int N, int k){
@@ -99,16 +101,50 @@ public class CSC482Sorting {
       return begin;
     }
     public static char[][] RadixSort(char[][] sortList, int length, int col){
+        int m = getMax(sortList,length,col);
+        for(int exp =1; m/exp >0; exp*=10){
+            countSort(sortList,length,exp,col);
+        }/**/
+        System.out.println(m);
+        return sortList;
+    }
+    public static char[][] countSort(char[][] sortList, int length, int exp, int col){
+        char[][] output = new char[length][col];
+        int max = (int) sortList[0][0];
+        for(int i = 1; i <length; i++){
+            if((int)sortList[i][0] > max){
+                max = (int)sortList[i][0];
+            }
+        }
+        int[] count = new int[max +1];
+
+        for(int i = 0; i < max; i++){
+            count[i] = 0;
+        }
+        for(int i = 0; i < length; i++){
+            count[((int)sortList[i][0]/exp)%10]++;
+        }
+        for(int i = 1; i < 10; i++){
+            count[i] += count[i-1];
+        }
+        for(int i = length-1; i >=0; i--){
+            output[count[((int)sortList[i][0]/exp)%10]-1] = sortList[i];
+            count[((int)sortList[i][0]/ exp)%10]--;
+        }
+        for(int i = 0; i < length; i++){
+            for(int x = 0; x < col; x++) {
+                sortList[i][x] = output[i][x];
+            }
+        }
 
         return sortList;
     }
-
     public static int getMax(char[][] sortList, int length, int col){
         int mx = (int)sortList[0][0];
         for(int i = 0; i < length; i++){
             for(int x = 0; x < col; x++){
                 if((int)sortList[i][x] > mx){
-                    mx = sortList[i][x];
+                    mx = sortList[i][0];
                 }
             }
         }
@@ -175,6 +211,10 @@ public class CSC482Sorting {
         double[][] mergeDR = new double[N][4];
         double[][] quickDR = new double[N][4];
         double[][] radixDR = new double[N][4];
+        double[] ExpSelectionDR = new double[N];
+        double[] ExpmergeDR = new double[N];
+        double[] ExpquickDR = new double[N];
+        double[] ExpradixDR = new double[N];
         char[][] myList;
 
         int total = 0;
@@ -221,11 +261,19 @@ public class CSC482Sorting {
                     quickDR[x][z] = 0;
                     mergeDR[x][z] = 0;
                     radixDR[x][z] = 0;
+                    ExpmergeDR[x] = 0;
+                    ExpquickDR[x] = 0;
+                    ExpradixDR[x] = 0;
+                    ExpSelectionDR[x] = 0;
                 } else {
                     selectionDR[x][z] = (double) selectionTime[x][z] / (double) selectionTime[x - 1][z];
                     quickDR[x][z] = (double) quickTime[x][z] / (double) quickTime[x - 1][z];
                     mergeDR[x][z] = (double) mergeTime[x][z] / (double) mergeTime[x - 1][z];
                     radixDR[x][z] = (double) radixTime[x][z] / (double) radixTime[x - 1][z];
+                    ExpmergeDR[x] = ((double)N_val *(double) Math.log(N_val))/((double)NVal[x-1] *(double) Math.log(NVal[x-1]));
+                    ExpSelectionDR[x] = ((double)NVal[x]*(double)NVal[x])/((double)NVal[x-1]*(double)NVal[x-1]);
+                    ExpradixDR[x] = ((double)NVal[x]*(double)kVal[z] )/ (double)NVal[x-1]*(double)kVal[z];
+                    ExpquickDR[x] = ((double)N_val *(double) Math.log(N_val))/((double)NVal[x-1] *(double) Math.log(NVal[x-1]));
                 }
 
 
