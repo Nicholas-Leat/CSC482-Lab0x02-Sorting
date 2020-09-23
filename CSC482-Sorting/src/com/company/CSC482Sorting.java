@@ -137,8 +137,23 @@ public class CSC482Sorting {
 
         return 1;
     }
-    public static char[][] RadixSort(char[][] sortList){
+    public static char[][] RadixSort(char[][] sortList, int length, int col){
+        int m = getMax(sortList,length,col);
         return sortList;
+    }
+    public  static char[][] countSort(char[][] sortList, int length, int col, int exp){
+        char[][] output = new char[length][col];
+    }
+    public static int getMax(char[][] sortList, int length, int col){
+        int mx = (int)sortList[0][0];
+        for(int i = 0; i < length; i++){
+            for(int x = 0; x < col; x++){
+                if((int)sortList[i][x] > mx){
+                    mx = sortList[i][x];
+                }
+            }
+        }
+        return mx;
     }
     public static char[][] GenerateTestList(int N, int k, int minV, int maxV){
         char[][] myList = new char[N][k];
