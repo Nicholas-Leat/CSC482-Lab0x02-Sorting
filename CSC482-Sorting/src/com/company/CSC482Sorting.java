@@ -22,7 +22,7 @@ public class CSC482Sorting {
            }
            System.out.println(" ");
        }
-       myList = MergeSort(myList,0,N-1);
+       myList = MergeSort(myList,0,N-1, k);
        System.out.println("After merge sort Sort");
         for(int i = 0; i < N; i++){
             for(int x = 0; x < k; x++){
@@ -64,9 +64,70 @@ public class CSC482Sorting {
         }
         return sortList;
     }
-    public static char[][] MergeSort(char[][] sortList,int low, int high){
-
+    public static char[][] MergeSort(char[][] sortList,int low, int high,int col){
+        if(low < high){
+            int m = (low + high)/2;
+            sortList = MergeSort(sortList,low, m,col);
+            sortList = MergeSort(sortList,m+1,high,col);
+            sortList = merge(sortList,low,high,col,m);
+        }
         return sortList;
+    }
+    public static char[][] merge(char[][] sortList, int low, int high, int col, int m){
+        int n1 = m - low + 1;
+        int n2 = high - m;
+
+        char[][] Left = new char[high][col];
+        char[][] Right = new char[high][col];
+        char[][] merged = new char[high][col];
+        System.out.printf("Value of n1 : %d \n", n1);
+
+        for(int i = 0; i < n1; i++){
+            for(int x = 0; x < col; x++){
+                System.out.println(i);
+                Left[i][x] = 'c';//sortList[i][x];
+            }
+        }
+        for(int i = 0; i < n2; i++){
+            for(int x = 0; x < col; x++){
+                Right[i][x] = sortList[m+1+i][x];
+            }
+        }
+        int i = 0;
+        int j = 0;
+        int k = 0;
+
+        while(i < n1 && j < n2){
+            if((int)Left[i][0] <= (int)Right[j][0]){
+                for(int z = 0; z < col; z++){
+                    merged[k][z] = Left[i][z];
+                }
+                i++;
+            } else{
+                for(int z = 0; z < col; z++){
+                    merged[k][z] = Right[j][z];
+                }
+                j++;
+            }
+            k++;
+        }
+        while(i < n1 && k < high){
+            for(int iter = 0; iter < col; iter++){
+                merged[k][iter] = Left[i][iter];
+            }
+            i++;
+            k++;
+        }
+        while(j < n2 && k < high){
+            for(int iter = 0; iter < col; iter++){
+                merged[k][iter] = Right[j][iter];
+            }
+            j++;
+            k++;
+        }
+
+        System.out.printf("End of merge function\n");
+        return merged;
     }
     public static char[][] QuickSort(char[][] sortList,int row,int col, int begin, int end){
 
@@ -74,7 +135,7 @@ public class CSC482Sorting {
     }
     public static int partition(char[][] myList, int begin, int end, int col){
 
-        return i +1;
+        return 1;
     }
     public static char[][] RadixSort(char[][] sortList){
         return sortList;
@@ -124,14 +185,19 @@ public class CSC482Sorting {
             System.out.println("Not Sorted!");
         }
     }
-    public static void TimePerformence(char[][] myList, int row, int col){
+    public static void TimePerformence(char[][] myList, int row, int col,int N){
         //run for multiple N values and multiple k values
+        long[] selectionTime = new long[N];
+        long[] mergeTime = new long[N];
+        long[] quickTime = new long[N];
+        long[] radixTime = new long[N];
 
-        long BeforeTime = getCpuTime();
-        myList = SelectionSort(myList,row,col);
-        long AfterTime = getCpuTime();
-        long selectionTime = AfterTime - BeforeTime;
-
+        for(int iter = 0; iter < N; iter++) {
+            long BeforeTime = getCpuTime();
+            myList = SelectionSort(myList, row, col);
+            long AfterTime = getCpuTime();
+            selectionTime[iter] = AfterTime - BeforeTime;
+        }
 
 
         return;
