@@ -296,8 +296,8 @@ public class CSC482Sorting {
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f\n",
-                    NVal[iter], selectionTime[iter][0], selectionDR[iter][0], selectionTime[iter][1], selectionDR[iter][1], selectionTime[iter][2], selectionDR[iter][2], selectionTime[iter][3], selectionDR[iter][3]);
+            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+                    NVal[iter], selectionTime[iter][0], selectionDR[iter][0], selectionTime[iter][1], selectionDR[iter][1], selectionTime[iter][2], selectionDR[iter][2], selectionTime[iter][3], selectionDR[iter][3], ExpSelectionDR[iter]);
         }
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -308,8 +308,8 @@ public class CSC482Sorting {
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f\n",
-                    NVal[iter], quickTime[iter][0], quickDR[iter][0], quickTime[iter][1], quickDR[iter][1], quickTime[iter][2], quickDR[iter][2], quickTime[iter][3], quickDR[iter][3]);
+            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+                    NVal[iter], quickTime[iter][0], quickDR[iter][0], quickTime[iter][1], quickDR[iter][1], quickTime[iter][2], quickDR[iter][2], quickTime[iter][3], quickDR[iter][3], ExpquickDR[iter]);
         }
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -320,8 +320,8 @@ public class CSC482Sorting {
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f\n",
-                    NVal[iter], mergeTime[iter][0], mergeDR[iter][0], mergeTime[iter][1], mergeDR[iter][1], mergeTime[iter][2], mergeDR[iter][2], mergeTime[iter][3], mergeDR[iter][3]);
+            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+                    NVal[iter], mergeTime[iter][0], mergeDR[iter][0], mergeTime[iter][1], mergeDR[iter][1], mergeTime[iter][2], mergeDR[iter][2], mergeTime[iter][3], mergeDR[iter][3], ExpmergeDR[iter]);
         }
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -332,8 +332,8 @@ public class CSC482Sorting {
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f\n",
-                    NVal[iter], radixTime[iter][0], radixDR[iter][0], radixTime[iter][1], radixDR[iter][1], radixTime[iter][2], radixDR[iter][2], radixTime[iter][3], radixDR[iter][3]);
+            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+                    NVal[iter], radixTime[iter][0], radixDR[iter][0], radixTime[iter][1], radixDR[iter][1], radixTime[iter][2], radixDR[iter][2], radixTime[iter][3], radixDR[iter][3], ExpradixDR[iter]);
         }
         return;
     }
