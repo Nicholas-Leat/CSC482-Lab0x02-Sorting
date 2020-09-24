@@ -13,11 +13,48 @@ public class CSC482Sorting {
         // write your code here
         int N;
         N = 10000;
-        int k = 6;
+        int k = 1;
         TimePerformence(N);
 
     }
+    public static char[][] RadixSort(char[][] sortList, int length, int col){
+        int m = getMax(sortList,length,col);
+        for(int exp =1; m/exp >0; exp*=10){
+            sortList = countSort(sortList,length,exp,col);
+        }
+        return sortList;
+    }
+    public static char[][] countSort(char[][] sortList, int length, int exp, int col){
+        char[][] output = new char[length][col];
+        int max = (int) sortList[0][0];
+        for(int i = 1; i <length; i++){
+            if((int)sortList[i][0] > max){
+                max = (int)sortList[i][0];
+            }
+        }
+        int[] count = new int[max +1];
 
+        for(int i = 0; i < max; i++){
+            count[i] = 0;
+        }
+        for(int i = 0; i < length; i++){
+            count[((int)sortList[i][0]/exp)%10]++;
+        }
+        for(int i = 1; i < 10; i++){
+            count[i] += count[i-1];
+        }
+        for(int i = length-1; i >=0; i--){
+            output[count[((int)sortList[i][0]/exp)%10]-1] = sortList[i];
+            count[((int)sortList[i][0]/ exp)%10]--;
+        }
+        for(int i = 0; i < length; i++){
+            for(int x = 0; x < col; x++) {
+                sortList[i][x] = output[i][x];
+            }
+        }
+
+        return sortList;
+    }
     public static char[][] SelectionSort(char[][] sortList, int N, int k){
         char[] temp = new char[k];
         int comp1,comp2;
@@ -138,25 +175,7 @@ public class CSC482Sorting {
 
       return begin;
     }
-    public static char[][] RadixSort(char[][] sortList, int length, int col){
-        int m = getMax(sortList,length,col);
-        for(int exp =1; m/exp >0; exp*=10){
-            sortList = countSort(sortList,length,exp,col);
-        }
-        return sortList;
-    }
-    public static char[][] countSort(char[][] sortList, int length, int exp, int col){
-        //Create storage bucket
-        char[][] output = new char[length][col];
-        int[] count = new int[256];
-        Arrays.fill(count,0);
 
-
-
-
-
-        return sortList;
-    }
     public static int getMax(char[][] sortList, int length, int col){
         int mx = (int)sortList[0][0];
         for(int i = 0; i < length; i++){
