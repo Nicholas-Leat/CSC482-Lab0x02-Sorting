@@ -1,15 +1,18 @@
 package com.company;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Random;
 
 public class CSC482Sorting {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         // write your code here
         int N;
-        N = 10;
+        N = 10000;
         int k = 6;
         TimePerformence(N);
 
@@ -47,14 +50,49 @@ public class CSC482Sorting {
         }
         return sortList;
     }
-    public static char[][] MergeSort(char[][] sortList,int low, int high,int col){
-
+    public static char[][] MergeSort(char[][] sortList,int row,int col, int low, int high){
+        int partition = Merge(sortList,low,high,col);
+        if(partition-1 > low){
+            sortList = MergeSort(sortList,row,col,low,partition-1);
+        }
+        if(partition+1 < high){
+            sortList = MergeSort(sortList,row,col,partition+1,high);
+        }
         return sortList;
     }
-    public static char[][] Merge(char[][] sortList, int low, int high, int m, int col){
+    public static int Merge(char[][] myList, int begin, int end, int col){
+        char[] pivot = new char[col];
+        for(int x = 0; x < col; x++){
+            pivot[x] = myList[end-1][x];
+        }
+        char[] temp = new char[col];
+        for(int i = begin; i < end; i++){
+            if((int)myList[i][0]<(int)pivot[0]){
+                for(int x = 0; x < col; x++) {
+                    temp[x] = myList[begin][x];
+                    myList[begin][x] = myList[i][x];
+                    myList[i][x] = temp[x];
+                }
+                begin++;
+            }else if((int)myList[i][0] == (int)pivot[0]){
+                for(int z =0; z < col; z++){
+                    if((int)myList[i][z]<(int)pivot[z]){
+                        for(int x = 0; x < col; x++) {
+                            temp[x] = myList[begin][x];
+                            myList[begin][x] = myList[i][x];
+                            myList[i][x] = temp[x];
+                        }
+                    }
+                }
+            }
+        }
+        for(int x = 0; x < col; x++) {
+            temp[x] = myList[begin][x];
+            myList[begin][x] = pivot[x];
+            myList[end-1][x] = temp[x];
+        }
 
-
-        return sortList;
+        return begin;
     }
     public static char[][] QuickSort(char[][] sortList,int row,int col, int low, int high){
         int partition = partition(sortList,low,high,col);
@@ -103,39 +141,19 @@ public class CSC482Sorting {
     public static char[][] RadixSort(char[][] sortList, int length, int col){
         int m = getMax(sortList,length,col);
         for(int exp =1; m/exp >0; exp*=10){
-            countSort(sortList,length,exp,col);
-        }/**/
-        System.out.println(m);
+            sortList = countSort(sortList,length,exp,col);
+        }
         return sortList;
     }
     public static char[][] countSort(char[][] sortList, int length, int exp, int col){
+        //Create storage bucket
         char[][] output = new char[length][col];
-        int max = (int) sortList[0][0];
-        for(int i = 1; i <length; i++){
-            if((int)sortList[i][0] > max){
-                max = (int)sortList[i][0];
-            }
-        }
-        int[] count = new int[max +1];
+        int[] count = new int[256];
+        Arrays.fill(count,0);
 
-        for(int i = 0; i < max; i++){
-            count[i] = 0;
-        }
-        for(int i = 0; i < length; i++){
-            count[((int)sortList[i][0]/exp)%10]++;
-        }
-        for(int i = 1; i < 10; i++){
-            count[i] += count[i-1];
-        }
-        for(int i = length-1; i >=0; i--){
-            output[count[((int)sortList[i][0]/exp)%10]-1] = sortList[i];
-            count[((int)sortList[i][0]/ exp)%10]--;
-        }
-        for(int i = 0; i < length; i++){
-            for(int x = 0; x < col; x++) {
-                sortList[i][x] = output[i][x];
-            }
-        }
+
+
+
 
         return sortList;
     }
@@ -195,10 +213,10 @@ public class CSC482Sorting {
             System.out.println("Not Sorted!");
         }
     }
-    public static void TimePerformence(int N){
+    public static void TimePerformence(int N) throws FileNotFoundException {
         //run for multiple N values and multiple k values
         //N is max value for N
-        long Timemax = 1000000;
+        long Timemax = 1000000000;
         int[] NVal = new int[N];
         int[] kVal = new int[4];
         long timeBefore;
@@ -235,7 +253,7 @@ public class CSC482Sorting {
                 System.out.println("Sorting with Quick Sort!");
                 myList = GenerateTestList(N_val, k_val, 65, 90);
                 timeBefore = getCpuTime();
-                myList = QuickSort(myList, N_val, k_val, 0, N_val);
+                myList = MergeSort(myList, N_val, k_val, 0, N_val);
                 IsSorted(myList, N_val, k_val);
                 timeAfter = getCpuTime();
                 quickTime[x][z] = timeAfter - timeBefore;
@@ -243,7 +261,7 @@ public class CSC482Sorting {
                 System.out.println("Sorting with Merge Sort!");
                 myList = GenerateTestList(N_val, k_val, 65, 90);
                 timeBefore = getCpuTime();
-                myList = MergeSort(myList, 0, N_val, k_val);
+                myList = QuickSort(myList, N_val, k_val, 0, N_val);
                 IsSorted(myList, N_val, k_val);
                 timeAfter = getCpuTime();
                 mergeTime[x][z] = timeAfter - timeBefore;
@@ -289,52 +307,55 @@ public class CSC482Sorting {
             k_val = k_val * 2;
             N_val = 1;
         }
-        System.out.println("Results for Selection Sort");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
-        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
+        PrintWriter writer = new PrintWriter("Output.txt");
+
+        writer.println("Results for Selection Sort");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
+        writer.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+            writer.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
                     NVal[iter], selectionTime[iter][0], selectionDR[iter][0], selectionTime[iter][1], selectionDR[iter][1], selectionTime[iter][2], selectionDR[iter][2], selectionTime[iter][3], selectionDR[iter][3], ExpSelectionDR[iter]);
         }
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-        System.out.println("Results for Quick Sort");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
-        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
+        writer.println("Results for Quick Sort");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
+        writer.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+            writer.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
                     NVal[iter], quickTime[iter][0], quickDR[iter][0], quickTime[iter][1], quickDR[iter][1], quickTime[iter][2], quickDR[iter][2], quickTime[iter][3], quickDR[iter][3], ExpquickDR[iter]);
         }
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-        System.out.println("Results for Merge Sort");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
-        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
+        writer.println("Results for Merge Sort");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
+        writer.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+            writer.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
                     NVal[iter], mergeTime[iter][0], mergeDR[iter][0], mergeTime[iter][1], mergeDR[iter][1], mergeTime[iter][2], mergeDR[iter][2], mergeTime[iter][3], mergeDR[iter][3], ExpmergeDR[iter]);
         }
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-        System.out.println("Results for Radix Sort");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
-        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
+        writer.println("Results for Radix Sort");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.format("k = %-68d k = %-57d k =%-58d k = %-57d\n",kVal[0],kVal[1],kVal[2],kVal[3] );
+        writer.format("%-10s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s %-30s\n",
                 "N", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Time", "Doubling Ratio", "Predicted Doubling Ratio");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        writer.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         for(int iter = 0; iter < total; iter++){
-            System.out.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
+            writer.format("%-10d %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30d %-30.3f %-30.3f\n",
                     NVal[iter], radixTime[iter][0], radixDR[iter][0], radixTime[iter][1], radixDR[iter][1], radixTime[iter][2], radixDR[iter][2], radixTime[iter][3], radixDR[iter][3], ExpradixDR[iter]);
         }
+        writer.close();
         return;
     }
     public static long getCpuTime( ) {
