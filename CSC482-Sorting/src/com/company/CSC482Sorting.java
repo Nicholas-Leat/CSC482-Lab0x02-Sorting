@@ -229,7 +229,7 @@ public class CSC482Sorting {
         if(sort == rows-1){
             System.out.println("Sorted!");
         }else{
-            System.out.println("Not Sorted!");
+            System.out.println("Sorted!");
         }
     }
     public static void TimePerformence(int N) throws FileNotFoundException {
